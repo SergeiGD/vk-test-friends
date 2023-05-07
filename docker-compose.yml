@@ -39,8 +39,8 @@ services:
       - ./doc:/usr/share/nginx/html/doc
     environment:
       URLS: "[
-        { url: 'doc/openapi-manual.yaml', name: 'ManualDocs'},
-        { url: 'doc/openapi-auto.yml', name: 'AutoDocs'},
+        { url: 'doc/openapi-manual.yaml', name: 'ManualDocs' },
+        { url: 'doc/openapi-auto.yml', name: 'AutoDocs' },
       ]"
     depends_on:
       - app

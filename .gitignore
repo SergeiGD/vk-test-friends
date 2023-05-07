@@ -4,3 +4,4 @@
 venv
 postgres_data
 vk_test_friends/email_messages.txt
+vk_test_friends/.coverage

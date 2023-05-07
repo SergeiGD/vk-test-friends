@@ -4,7 +4,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework.reverse import reverse
 
 from users.models import CustomUser
-from core.utils import send_email
+from core.utils import send_email, EmailSubjects
 
 
 class SingUpTokenGenerator(PasswordResetTokenGenerator):
@@ -40,7 +40,7 @@ def send_sing_up_email(user: CustomUser, domain: str):
     absolute_url = f'http://{domain}{relative_url}?id={encoded_id}&token={token}'
 
     # создаем тему и тело письма
-    email_subject = 'Активация аккаунта'
+    email_subject = EmailSubjects.VERIFY_ACCOUNT.value
     email_content = f'Добрый день! Для подтверждения регистрации перейдите по следующей ссылке: {absolute_url}'
 
     # отправляем письмо
@@ -92,7 +92,7 @@ def send_reset_password_email(user: CustomUser, domain: str):
     absolute_url = f'http://{domain}{relative_url}?id={encoded_id}&token={token}'
 
     # создаем тему и тело письма
-    email_subject = 'Сборс пароля'
+    email_subject = EmailSubjects.RESET_PASSWORD.value
     email_content = f'Добрый день! Для сброса пароля перейдите по следующей ссылке: {absolute_url}'
 
     # отправляем письмо

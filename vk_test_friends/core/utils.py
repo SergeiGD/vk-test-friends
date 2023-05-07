@@ -1,6 +1,15 @@
+from enum import Enum
 from django.core.mail import EmailMessage
 from django.conf import settings
 from datetime import datetime
+
+
+class EmailSubjects(str, Enum):
+    """
+    Enum для статутов дружбы
+    """
+    VERIFY_ACCOUNT = 'Подтверждение регистрации'
+    RESET_PASSWORD = 'Сброс пароля'
 
 
 def send_email(subject: str, content: str, send_to: str):
