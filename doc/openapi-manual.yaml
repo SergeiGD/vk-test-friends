@@ -1,0 +1,1016 @@
+---
+openapi: 3.0.0
+info:
+  title: VK Friends
+  description: API для сервиса друзей
+  version: 1.0.0
+servers:
+- url: http://localhost:8000
+  description: localhost
+tags:
+- name: users
+  description: Пользователи
+- name: requests
+  description: Заявки в друзья
+- name: auth
+  description: Управление аккаунтом
+paths:
+  /api/users/:
+    get:
+      tags:
+      - users
+      description: Получение списка пользователей
+      operationId: users_list
+      parameters:
+      - name: limit
+        in: query
+        description: Кол-во страниц для отображения
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: "Номер элемента, с которого начать отображение"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersPagination'
+      security:
+      - jwt: []
+  /api/users/{id}/:
+    get:
+      tags:
+      - users
+      description: Получение конкретного пользователя
+      operationId: user_retrieve
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+      security:
+      - jwt: []
+  /api/friends/:
+    get:
+      tags:
+      - friends
+      description: Получение списка друзей
+      operationId: friends_list
+      parameters:
+      - name: limit
+        in: query
+        description: Кол-во страниц для отображения
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: "Номер элемента, с которого начать отображение"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersPagination'
+      security:
+      - jwt: []
+  /api/friends/{id}/:
+    get:
+      tags:
+      - friends
+      description: Получение конкретного друга
+      operationId: friend_retrieve
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+      security:
+      - jwt: []
+    delete:
+      tags:
+      - friends
+      description: Удаление пользователя из друзей
+      operationId: friend_remove
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "204":
+          description: Успешное удаление
+      security:
+      - jwt: []
+  /api/friends/{id}/status/:
+    get:
+      tags:
+      - friends
+      description: Получение статуса дружбы с пользователем
+      operationId: get_friendship_status
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                СтатусДрузья:
+                  summary: Статус друзья
+                  value:
+                    status: Друзья
+                СтатусВходящаяЗаявка:
+                  summary: Статус есть входящая заявка
+                  value:
+                    status: Есть входящая заявка
+                СтатусИсходящаяЗаявка:
+                  summary: Статус есть исходящая заявка
+                  value:
+                    status: Есть исходящая заявка
+                СтатусНетЗаявок:
+                  summary: Статус нет заявок
+                  value:
+                    status: Нет активной заявки
+      security:
+      - jwt: []
+  /api/requests/incoming_requests/:
+    get:
+      tags:
+      - requests
+      description: Получение списка входящих заявок
+      operationId: incoming_requests_list
+      parameters:
+      - name: limit
+        in: query
+        description: Кол-во страниц для отображения
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: "Номер элемента, с которого начать отображение"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomingRequestsPagination'
+      security:
+      - jwt: []
+  /api/requests/incoming_requests/{id}/:
+    get:
+      tags:
+      - requests
+      description: Получение конкретной входящей заявки
+      operationId: incoming_request_retrieve
+      parameters:
+      - name: id
+        in: path
+        description: id заявки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomingRequests'
+      security:
+      - jwt: []
+  /api/requests/incoming_requests/{id}/confirm/:
+    post:
+      tags:
+      - requests
+      description: Подтверждение заявки в друзья
+      operationId: incoming_request_confirm
+      parameters:
+      - name: id
+        in: path
+        description: id заявки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное подтверждение
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                УспешноеПодтверждение:
+                  summary: Успешное подтверждение
+                  value:
+                    detail: Заявка в друзья принята
+      security:
+      - jwt: []
+  /api/requests/incoming_requests/{id}/reject/:
+    post:
+      tags:
+      - requests
+      description: Отклонения заявки в друзья
+      operationId: incoming_request_reject
+      parameters:
+      - name: id
+        in: path
+        description: id заявки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное отклонение
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                УспешноеОтклонение:
+                  summary: Успешное отклонение
+                  value:
+                    detail: Заявка в друзья отклонена
+      security:
+      - jwt: []
+  /api/requests/outcoming_requests/:
+    get:
+      tags:
+      - requests
+      description: Получение списка исходящих заявок
+      operationId: outcoming_requests_list
+      parameters:
+      - name: limit
+        in: query
+        description: Кол-во страниц для отображения
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: "Номер элемента, с которого начать отображение"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequestsPagination'
+      security:
+      - jwt: []
+    post:
+      tags:
+      - requests
+      description: Создание заявки в друзья
+      operationId: outcoming_request_create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutcomingRequests'
+        required: true
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "204":
+          description: "Принята встречная заявка, новая не создана"
+        "201":
+          description: Успешное создание
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequests'
+      security:
+      - jwt: []
+  /api/requests/outcoming_requests/{id}/:
+    get:
+      tags:
+      - requests
+      description: Просмотр конкретной исходящей заявки
+      operationId: outcoming_request_retrieve
+      parameters:
+      - name: id
+        in: path
+        description: id заявки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "200":
+          description: Успешное получение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequests'
+      security:
+      - jwt: []
+    delete:
+      tags:
+      - requests
+      description: Удаление исходящей заявки
+      operationId: outcoming_request_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "401":
+          description: Требуется вход
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ТребуетсяВход:
+                  summary: Учетные данные не были предоставлены.
+                  value:
+                    detail: Учетные данные не были предоставлены.
+        "204":
+          description: Успешное удаление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequests'
+      security:
+      - jwt: []
+  /api/auth/tokens/:
+    post:
+      tags:
+      - auth
+      description: Получение JWT токенов
+      operationId: tokens_get_pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetJWTTokens'
+        required: true
+      responses:
+        "200":
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetJWTTokens'
+  /api/auth/tokens/refresh/:
+    post:
+      tags:
+      - auth
+      description: Обновление JWT токенов
+      operationId: tokens_refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshJWTTokens'
+        required: true
+      responses:
+        "200":
+          description: Успешное обновление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshJWTTokens'
+  /api/auth/sing_up/:
+    post:
+      tags:
+      - auth
+      description: Регистрация пользователя
+      operationId: sing_up
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingUp'
+        required: true
+      responses:
+        "201":
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                УспешнаяРегистрация:
+                  summary: Успешная регистрация
+                  value:
+                    detail: На почту отправлено письмо для подтверждения регистрации
+  /api/auth/sing_up/verify_account/:
+    post:
+      tags:
+      - auth
+      description: Подтверждение регистрации
+      operationId: verify_account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyAccount'
+        required: true
+      responses:
+        "200":
+          description: Успешное подтверждение
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                УспешноеПодтверждение:
+                  summary: Успешное подтверждение
+                  value:
+                    detail: Аккаунт успешно подтвержден
+        "400":
+          description: Ошибка подтверждения
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ОшибкаПодтверждения:
+                  summary: Успешный сброс пароля
+                  value:
+                    detail: Возникла ошибка при подтверждении сброса пароля. Проверьте корректность ссылки
+  /api/auth/reset_password/:
+    post:
+      tags:
+      - auth
+      description: Запрос сброса пароля
+      operationId: reset_password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestResetPassword'
+        required: true
+      responses:
+        "200":
+          description: Запрос отправлен
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ЗапросУспешноОтправлен:
+                  summary: Запрос успешно отправлен
+                  value:
+                    detail: На почту отправлено письмо для подтверждения сброса пароля
+  /api/auth/reset_password/confirm_reset/:
+    post:
+      tags:
+      - auth
+      description: Подтверждение сброса пароля
+      operationId: confirm_reset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmResetPassword'
+        required: true
+      responses:
+        "200":
+          description: Успешное обновление пароля
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                УспешныйСбросПароля:
+                  summary: Успешный сброс пароля
+                  value:
+                    detail: Пароль успешно изменен
+        "400":
+          description: Ошибка подтверждения
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                ОшибкаПодтверждения:
+                  summary: Успешный сброс пароля
+                  value:
+                    detail: Возникла ошибка при подтверждении сброса пароля. Проверьте корректность ссылки
+components:
+  schemas:
+    Users:
+      required:
+      - date_created
+      - email
+      - id
+      - url
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          example: /api/users/1
+        email:
+          title: Эл. почта
+          type: string
+          format: email
+        first_name:
+          title: Имя
+          type: string
+          example: Петр
+        last_name:
+          title: Фамилия
+          type: string
+          example: Иванов
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+      description: Схема пользователя
+    IncomingRequests:
+      required:
+      - date_created
+      - id
+      - sender
+      - sender_url
+      - url
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          example: api/requests/incoming_requests/1
+        sender:
+          title: Отправитель
+          type: integer
+          example: 5
+        sender_url:
+          type: string
+          format: uri
+          readOnly: true
+          example: /api/users/5
+      description: Схема входящей заявки
+    OutcomingRequests:
+      required:
+      - date_created
+      - id
+      - target
+      - target_url
+      - url
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          example: api/requests/outcoming_requests/1
+        target:
+          title: Адресат
+          type: integer
+          example: 3
+        target_url:
+          type: string
+          format: uri
+          readOnly: true
+          example: /api/users/3
+      description: Схема исходящей заявки
+    IncomingRequestsPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        next:
+          type: string
+          format: uri
+          nullable: true
+          example: api/requests/incoming_requests/?offset=30&limit=10
+        previous:
+          type: string
+          format: uri
+          nullable: true
+          example: api/requests/incoming_requests/?offset=0&limit=10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncomingRequests'
+      description: Схема пагинации списка входящих заявок
+    OutcomingRequestsPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        next:
+          type: string
+          format: uri
+          nullable: true
+          example: /api/requests/outcoming_requests/?offset=30&limit=10
+        previous:
+          type: string
+          format: uri
+          nullable: true
+          example: /api/requests/outcoming_requests/?offset=0&limit=10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutcomingRequests'
+      description: Схема пагинации списка исходящих заявок
+    UsersPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        next:
+          type: string
+          format: uri
+          nullable: true
+          example: /api/users/?offset=30&limit=10
+        previous:
+          type: string
+          format: uri
+          nullable: true
+          example: /api/users/?offset=0&limit=10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Users'
+      description: Схема пагинации списка пользователей
+    GetJWTTokens:
+      required:
+      - access
+      - email
+      - password
+      - refresh
+      type: object
+      properties:
+        email:
+          title: Эл. почта
+          type: string
+          format: email
+          writeOnly: true
+        password:
+          title: Пароль
+          type: string
+          writeOnly: true
+          example: password123
+        access:
+          type: string
+          readOnly: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzMzc4NzE2LCJpYXQiOjE2ODMzNzY5MTYsImp0aSI6ImVjZDgwNWYxZDA3NjQ1ZmI5MzZhZmIyYmFmMTM2MThiIiwidXNlcl9pZCI6MjUyfQ.c8DfhVf0CrrVu_TI_neqlhp3cJT9o3boFGng6XwAF-Q
+        refresh:
+          type: string
+          readOnly: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzQ2MzMxNiwiaWF0IjoxNjgzMzc2OTE2LCJqdGkiOiJiNGE4ODg3ZmUxZjE0YzBmOTI0NDIxNDMwNGNmNmMyOSIsInVzZXJfaWQiOjI1Mn0.DwYRSeVu8GS0LdKyIO_H3o5yE3mvemghfGpB8D7sXy0
+      description: Схема для получения JWT токенов
+    RefreshJWTTokens:
+      required:
+      - access
+      - refresh
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzMzc4NzE2LCJpYXQiOjE2ODMzNzY5MTYsImp0aSI6ImVjZDgwNWYxZDA3NjQ1ZmI5MzZhZmIyYmFmMTM2MThiIiwidXNlcl9pZCI6MjUyfQ.c8DfhVf0CrrVu_TI_neqlhp3cJT9o3boFGng6XwAF-Q
+        refresh:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzQ2MzMxNiwiaWF0IjoxNjgzMzc2OTE2LCJqdGkiOiJiNGE4ODg3ZmUxZjE0YzBmOTI0NDIxNDMwNGNmNmMyOSIsInVzZXJfaWQiOjI1Mn0.DwYRSeVu8GS0LdKyIO_H3o5yE3mvemghfGpB8D7sXy0
+      description: Схема для обновления JWT токенов
+    SingUp:
+      required:
+      - email
+      - id
+      - password1
+      - password2
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 7
+        email:
+          title: Эл. почта
+          type: string
+          format: email
+        first_name:
+          title: Имя
+          type: string
+          example: Петр
+        last_name:
+          title: Фамилия
+          type: string
+          example: Иванов
+        password1:
+          minLength: 6
+          type: string
+          writeOnly: true
+          example: password123
+        password2:
+          minLength: 6
+          type: string
+          writeOnly: true
+          example: password123
+      description: Схема для регистрации пользователей
+    VerifyAccount:
+      required:
+      - encoded_id
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+          example: bnpa4a-4255053c3097b23decf7849a7898f72c
+        encoded_id:
+          type: string
+          writeOnly: true
+          example: MjUy
+      description: Схема для подтверждения регистрации
+    RequestResetPassword:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      description: Схема для запроса сброса пароля
+    ConfirmResetPassword:
+      required:
+      - encoded_id
+      - password1
+      - password2
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+          example: bnpa4a-4255053c3097b23decf7849a7898f72c
+        encoded_id:
+          type: string
+          writeOnly: true
+          example: MjUy
+        password1:
+          minLength: 6
+          type: string
+          writeOnly: true
+          example: password123
+        password2:
+          minLength: 6
+          type: string
+          writeOnly: true
+          example: password123
+      description: Схема для подтверждения сброса пароля
+  responses:
+    "401Unauthorized":
+      description: Требуется вход
+      content:
+        application/json:
+          schema:
+            type: object
+          examples:
+            ТребуетсяВход:
+              summary: Учетные данные не были предоставлены.
+              value:
+                detail: Учетные данные не были предоставлены.
+  parameters:
+    limit:
+      name: limit
+      in: query
+      description: Кол-во страниц для отображения
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    offset:
+      name: offset
+      in: query
+      description: "Номер элемента, с которого начать отображение"
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,831 @@
+openapi: 3.0.3
+info:
+  title: Friends
+  version: 1.0.0
+  description: API для сервиса друзей
+paths:
+  /api/auth/reset_password/:
+    post:
+      operationId: auth_reset_password_create
+      description: Запроса сброса пароля
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestResetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RequestResetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RequestResetPassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                УспешныйЗапрос:
+                  value:
+                    detail: На почту отправлено письмо для подтверждения сброса пароля
+                  summary: Успешный запрос
+          description: Успешный запрос
+  /api/auth/reset_password/confirm_reset/:
+    post:
+      operationId: auth_reset_password_confirm_reset_create
+      description: Подтверждения сброса пароля
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmResetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConfirmResetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConfirmResetPassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ПарольУспешноИзменен:
+                  value:
+                    detail: Пароль успешно изменен
+                  summary: Пароль успешно изменен
+          description: Пароль успешно изменен
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ОшибкаПодтверждения:
+                  value:
+                    detail: Возникла ошибка при подтверждении аккаунта. Проверьте
+                      корректность ссылки
+                  summary: Ошибка подтверждения
+          description: Ошибка подтверждения
+  /api/auth/sing_up/:
+    post:
+      operationId: auth_sing_up_create
+      description: Регистрации пользователя
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingUp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SingUp'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SingUp'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                АккаунтСоздан:
+                  value:
+                    detail: На почту отправлено письмо для подтверждения регистрации
+                  summary: Аккаунт создан
+          description: Аккаунт создан
+  /api/auth/sing_up/verify_account/:
+    post:
+      operationId: auth_sing_up_verify_account_create
+      description: Подтверждения регистрации
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyAccount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyAccount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyAccount'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                АккаунтУспешноПодтвержден:
+                  value:
+                    detail: Аккаунт успешно подтвержден
+                  summary: Аккаунт успешно подтвержден
+          description: Аккаунт успешно подтвержден
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ОшибкаПодтверждения:
+                  value:
+                    detail: Возникла ошибка при подтверждении аккаунта. Проверьте
+                      корректность ссылки
+                  summary: Ошибка подтверждения
+          description: Ошибка подтверждения
+  /api/auth/tokens/:
+    post:
+      operationId: auth_tokens_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/auth/tokens/refresh/:
+    post:
+      operationId: auth_tokens_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/friends/:
+    get:
+      operationId: friends_list
+      description: Получение списка друзей
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - friends
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsersList'
+          description: ''
+  /api/friends/{id}/:
+    get:
+      operationId: friends_retrieve
+      description: Получение информации о друге и удаления его из списка друзей
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - friends
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+          description: ''
+    delete:
+      operationId: friends_destroy
+      description: Получение информации о друге и удаления его из списка друзей
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - friends
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/friends/{id}/status/:
+    get:
+      operationId: friends_status_retrieve
+      description: Получение статуса дружбы с пользователем
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - friends
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                СтатусДрузья:
+                  value:
+                    status: Друзья
+                  summary: Статус друзья
+                СтатусЕстьВходящаяЗаявка:
+                  value:
+                    status: Есть входящая заявка
+                  summary: Статус есть входящая заявка
+          description: Статус получен
+  /api/requests/incoming_requests/:
+    get:
+      operationId: requests_incoming_requests_list
+      description: Получение списка входящих заявок
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIncomingRequestsList'
+          description: ''
+  /api/requests/incoming_requests/{id}/:
+    get:
+      operationId: requests_incoming_requests_retrieve
+      description: Просмотр входящей заявки
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomingRequests'
+          description: ''
+  /api/requests/incoming_requests/{id}/confirm/:
+    post:
+      operationId: requests_incoming_requests_confirm_create
+      description: Подтверждение заявки в друзья
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                УспешноеПодтверждение:
+                  value:
+                    detail: Заявка в друзья принята
+                  summary: Успешное подтверждение
+          description: Успешное подтверждение
+  /api/requests/incoming_requests/{id}/reject/:
+    post:
+      operationId: requests_incoming_requests_reject_create
+      description: Отклонения входящей заявки
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                УспешноеОтклонение:
+                  value:
+                    detail: Заявка в друзья отклонена
+                  summary: Успешное отклонение
+          description: Успешное отклонение
+  /api/requests/outcoming_requests/:
+    get:
+      operationId: requests_outcoming_requests_list
+      description: Получение списка исходящих заявок и отправки новых
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOutcomingRequestsList'
+          description: ''
+    post:
+      operationId: requests_outcoming_requests_create
+      description: Получение списка исходящих заявок и отправки новых
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutcomingRequests'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OutcomingRequests'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OutcomingRequests'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: Подтверждена встречная заявка
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequests'
+          description: Заявка отправлена
+  /api/requests/outcoming_requests/{id}/:
+    get:
+      operationId: requests_outcoming_requests_retrieve
+      description: Просмотр и удаление исходящей заявки
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomingRequests'
+          description: ''
+    delete:
+      operationId: requests_outcoming_requests_destroy
+      description: Просмотр и удаление исходящей заявки
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/:
+    get:
+      operationId: users_list
+      description: Получение списка пользователей
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsersList'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: users_retrieve
+      description: Получение информации о пользователе
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+          description: ''
+components:
+  schemas:
+    ConfirmResetPassword:
+      type: object
+      description: Сериалайзер для подтверждения сброса пароля
+      properties:
+        token:
+          type: string
+          writeOnly: true
+        encoded_id:
+          type: string
+          writeOnly: true
+        password1:
+          type: string
+          writeOnly: true
+          minLength: 6
+        password2:
+          type: string
+          writeOnly: true
+          minLength: 6
+      required:
+      - encoded_id
+      - password1
+      - password2
+      - token
+    IncomingRequests:
+      type: object
+      description: Сериалайзер входящих заявок
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        sender:
+          type: integer
+          title: Отправитель
+        sender_url:
+          type: string
+          format: uri
+          readOnly: true
+      required:
+      - date_created
+      - id
+      - sender
+      - sender_url
+      - url
+    OutcomingRequests:
+      type: object
+      description: Сериалайзер исходящих заявок
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        target:
+          type: integer
+          title: Адресат
+        target_url:
+          type: string
+          format: uri
+          readOnly: true
+      required:
+      - date_created
+      - id
+      - target
+      - target_url
+      - url
+    PaginatedIncomingRequestsList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncomingRequests'
+    PaginatedOutcomingRequestsList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutcomingRequests'
+    PaginatedUsersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Users'
+    RequestResetPassword:
+      type: object
+      description: Сериалайзер для запроса сброса пароля
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    SingUp:
+      type: object
+      description: Сериалайзер для регистрации пользователей
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+          title: Имя
+          maxLength: 150
+        last_name:
+          type: string
+          title: Фамилия
+          maxLength: 150
+        password1:
+          type: string
+          writeOnly: true
+          minLength: 6
+        password2:
+          type: string
+          writeOnly: true
+          minLength: 6
+      required:
+      - email
+      - id
+      - password1
+      - password2
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    Users:
+      type: object
+      description: Сериалайзер пользователей
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Эл. почта
+          maxLength: 254
+        first_name:
+          type: string
+          title: Имя
+          maxLength: 150
+        last_name:
+          type: string
+          title: Фамилия
+          maxLength: 150
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_created
+      - email
+      - id
+      - url
+    VerifyAccount:
+      type: object
+      description: Сериалайзер для подтверждения регистрации
+      properties:
+        token:
+          type: string
+          writeOnly: true
+        encoded_id:
+          type: string
+          writeOnly: true
+      required:
+      - encoded_id
+      - token
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+servers:
+- url: http://localhost:8000
+  description: localhost

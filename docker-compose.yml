@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_app
+    container_name: friends_app
+    volumes:
+      - ./vk_test_friends/:/app/
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  db:
+    image: postgres:latest
+    container_name: friends_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${DB_PORT}:5432
+    env_file:
+      - ./.env
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: friends_swagger_ui
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./doc:/usr/share/nginx/html/doc
+    environment:
+      URLS: "[
+        { url: 'doc/openapi-manual.yaml', name: 'ManualDocs'},
+        { url: 'doc/openapi-auto.yml', name: 'AutoDocs'},
+      ]"
+    depends_on:
+      - app

@@ -1,0 +1,6 @@
+*.idea
+*__pycache__*
+.env
+venv
+postgres_data
+vk_test_friends/email_messages.txt
