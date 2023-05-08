@@ -19,6 +19,7 @@ services:
   db:
     image: postgres:latest
     container_name: friends_db
+    command: -p ${DB_PORT}
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     environment:
@@ -26,7 +27,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - ${DB_PORT}:5432
+      - ${DB_PORT}:${DB_PORT}
     env_file:
       - ./.env
 
@@ -34,9 +35,9 @@ services:
     image: swaggerapi/swagger-ui
     container_name: friends_swagger_ui
     ports:
-      - "8080:8080"
+      - ${SWAGGER_PORT}:${SWAGGER_PORT}
     volumes:
-      - ./doc:/usr/share/nginx/html/doc
+      - ./vk_test_friends/doc:/usr/share/nginx/html/doc
     environment:
       URLS: "[
         { url: 'doc/openapi-manual.yaml', name: 'ManualDocs' },

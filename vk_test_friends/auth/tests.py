@@ -83,8 +83,8 @@ class RequestResetPasswordTestCase(APITestCase):
 
 class ConfirmResetTestCase(APITestCase):
     def setUp(self) -> None:
-        user = CustomUser.objects.create_user(email='tester@gmail.com', password='qweqwe', is_active=True)
-        self.encoded_id, self.token = send_reset_password_email(user, 'localhost')
+        self.user = CustomUser.objects.create_user(email='tester@gmail.com', password='qweqwe', is_active=True)
+        self.encoded_id, self.token = send_reset_password_email(self.user, 'localhost')
 
     def test_successful_reset_password(self):
         """

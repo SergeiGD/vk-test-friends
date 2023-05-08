@@ -21,39 +21,20 @@ class SingUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'password': 'Пароли не совпадают'
             })
+        if CustomUser.objects.filter(email=data['email'], is_active=True).exists():
+            raise serializers.ValidationError({
+                'email': 'Уже есть активный пользователь с таким адресом эл. почты'
+            })
 
         return super().validate(data)
-
-    def create(self, validated_data):
-        """
-        Переопределенный метод create, для вызова create_user
-        """
-        data = {
-            'email': validated_data['email'],
-            'first_name': validated_data.get('first_name', ''),
-            'last_name': validated_data.get('last_name', ''),
-            'password': validated_data['password1'],
-            'is_staff': False,
-            'is_active': False,
-            'is_superuser': False,
-        }
-        user = CustomUser.objects.filter(email=data['email'], is_active=False).first()
-        if user is not None:
-            # если пользователь уже регистрировался, но так и не подтвердил аккаунт, то просто обновим данные
-            user.first_name = data['first_name']
-            user.last_name = data['last_name']
-            user.save()
-            user.set_password(data['password'])
-            return user
-        return CustomUser.objects.create_user(**data)
 
 
 class VerifyAccountSerializer(serializers.Serializer):
     """
     Сериалайзер для подтверждения регистрации
     """
-    token = serializers.CharField(write_only=True)
-    encoded_id = serializers.CharField(write_only=True)
+    token = serializers.CharField()
+    encoded_id = serializers.CharField()
 
 
 class RequestResetPasswordSerializer(serializers.Serializer):

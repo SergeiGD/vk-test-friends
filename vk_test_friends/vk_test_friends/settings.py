@@ -90,7 +90,7 @@ DATABASES = {
         'USER': environ.get('DB_USER', 'db_user'),
         'PASSWORD': environ.get('DB_PASSWORD', 'db_password'),
         'HOST': 'db',
-        'PORT': '5432',
+        'PORT': environ.get('DB_PORT', '5454'),
     }
 }
 
@@ -174,8 +174,9 @@ SPECTACULAR_SETTINGS = {
 
 # CORS (для swagger'a)
 
+SWAGGER_PORT = environ.get('SWAGGER_PORT', '8080')
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    f'http://localhost:{SWAGGER_PORT}',
 ]
 
 

@@ -571,10 +571,8 @@ components:
       properties:
         token:
           type: string
-          writeOnly: true
         encoded_id:
           type: string
-          writeOnly: true
         password1:
           type: string
           writeOnly: true
@@ -814,10 +812,8 @@ components:
       properties:
         token:
           type: string
-          writeOnly: true
         encoded_id:
           type: string
-          writeOnly: true
       required:
       - encoded_id
       - token

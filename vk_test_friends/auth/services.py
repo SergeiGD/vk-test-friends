@@ -21,6 +21,33 @@ class SingUpTokenGenerator(PasswordResetTokenGenerator):
         return f"{user.pk}{timestamp}{user.is_active}"
 
 
+def sing_up_user(sing_up_data: dict):
+    """
+    Регистрация пользователя
+    :param sing_up_data: словарь с данными регистрации
+    :return:
+    """
+    # преобразуем данные в удобный вид и поставим значения по умолчанию (is_active, is_staff, is_superuser)
+    user_data = {
+        'email': sing_up_data['email'],
+        'password': sing_up_data['password1'],
+        'first_name': sing_up_data.get('first_name', ''),
+        'last_name': sing_up_data.get('last_name', ''),
+        'is_staff': False,
+        'is_active': False,
+        'is_superuser': False,
+    }
+    user = CustomUser.objects.filter(email=user_data['email'], is_active=False).first()
+    if user is not None:
+        # если пользователь уже регистрировался, но так и не подтвердил аккаунт, то просто обновим данные
+        user.first_name = user_data['first_name']
+        user.last_name = user_data['last_name']
+        user.save()
+        user.set_password(user_data['password'])
+        return user
+    return CustomUser.objects.create_user(**user_data)
+
+
 def send_sing_up_email(user: CustomUser, domain: str):
     """
     Отправка письма для подтверждения регистрации

@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .serializers import (
     SingUpSerializer, VerifyAccountSerializer, RequestResetPasswordSerializer, ConfirmResetPasswordSerializer
 )
-from .services import send_sing_up_email, verify_account, send_reset_password_email, verify_reset_password
+from .services import send_sing_up_email, verify_account, send_reset_password_email, verify_reset_password, sing_up_user
 from users.models import CustomUser
 
 
@@ -37,7 +37,7 @@ class SingUpView(GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        user = sing_up_user(serializer.validated_data)
 
         # отправляем письмо с подтверждением регистрации
         send_sing_up_email(user, get_current_site(request).domain)
@@ -180,7 +180,7 @@ class ConfirmResetPasswordAPIView(GenericAPIView):
         # получаем токен и закодированное id пользователя
         token = serializer.validated_data['token']
         encoded_id = serializer.validated_data['encoded_id']
-        password = serializer.validated_data['encoded_id']
+        password = serializer.validated_data['password1']
 
         if verify_reset_password(token, encoded_id, password):
             # если успешно изменили пароль
