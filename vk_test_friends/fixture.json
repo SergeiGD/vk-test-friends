@@ -1,0 +1,78 @@
+[
+  {
+    "model": "users.customuser",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$V1aEm69Sa74HVF4rgYTuKU$iviHL49IfLK3u6ow6KeXczcNJrIOG6vghc19r4SbFw4=",
+      "last_login": null,
+      "is_superuser": true,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-05-08T07:58:05.083Z",
+      "email": "qweqwe@mail.ru",
+      "date_created": "2023-05-08T07:58:05.083Z",
+      "groups": [],
+      "user_permissions": [],
+      "friends": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$JT9ICV4gFTd5iEASkR47S4$6GptgGZd0r2VL1+X7PgB63PsNAUwQUqhJexgt3IbkXE=",
+      "last_login": null,
+      "is_superuser": true,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-05-08T07:58:27.479Z",
+      "email": "asdasdqwe@mail.ru",
+      "date_created": "2023-05-08T07:58:27.479Z",
+      "groups": [],
+      "user_permissions": [],
+      "friends": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$ary6t8fCByvJpIqLEhfBFd$OYeWuk57O2JG96F6Nc5cDzdIJqWUlGyFbU29oJX7H2I=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-05-05T11:04:17.362Z",
+      "email": "test1@mail.ru",
+      "date_created": "2023-05-05T11:04:17.362Z",
+      "groups": [],
+      "user_permissions": [],
+      "friends": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$06okWc4HMFphqzidkPTUmO$nR+totZR1uN+EQ4+IsZbLcEkBT0bE7nJJqmXPZYDlPA=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-05-05T11:04:49.438Z",
+      "email": "test2@mail.ru",
+      "date_created": "2023-05-05T11:04:49.438Z",
+      "groups": [],
+      "user_permissions": [],
+      "friends": []
+    }
+  }
+]

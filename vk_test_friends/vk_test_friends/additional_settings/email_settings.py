@@ -2,6 +2,7 @@ import pathlib
 from os import environ
 
 
+SEND_EMAILS = environ.get('SEND_EMAILS', False)
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST = environ.get('EMAIL_HOST')

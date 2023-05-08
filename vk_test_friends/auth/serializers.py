@@ -1,6 +1,9 @@
 from rest_framework import serializers
+import logging
 
 from users.models import CustomUser
+
+logger = logging.getLogger('auth_logger')
 
 
 class SingUpSerializer(serializers.ModelSerializer):
@@ -22,6 +25,7 @@ class SingUpSerializer(serializers.ModelSerializer):
                 'password': 'Пароли не совпадают'
             })
         if CustomUser.objects.filter(email=data['email'], is_active=True).exists():
+            logger.info(f'попытка регистрации уже активного аккаунта {data["email"]}')
             raise serializers.ValidationError({
                 'email': 'Уже есть активный пользователь с таким адресом эл. почты'
             })
@@ -49,6 +53,7 @@ class RequestResetPasswordSerializer(serializers.Serializer):
             email=data['email'],
             is_active=True,
         ).exists():
+            logger.info(f'попытка сброса пароля для незарегистрированного/неактивного аккаунта {data["email"]}')
             raise serializers.ValidationError({
                 'email': 'Не найден активный пользователь с таким адресом эл. почты'
             })

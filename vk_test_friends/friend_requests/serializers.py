@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+import logging
 
 from friend_requests.models import FriendRequest
 from friend_requests.services import get_active_outcoming_requests
 from users.models import CustomUser
+
+logger = logging.getLogger(__name__)
+
 
 
 class BaseRequestsSerializer(serializers.ModelSerializer):
@@ -60,6 +64,7 @@ class OutcomingRequestsSerializer(BaseRequestsSerializer):
 
         if sender == target:
             # если запрос отправлен самому себе
+            logger.warning(f'попытка отправить запрос самому себе от пользователя {sender.email}')
             raise ValidationError({
                 'target': 'Нельзя отправить запрос самому себе',
             })
@@ -68,6 +73,9 @@ class OutcomingRequestsSerializer(BaseRequestsSerializer):
                 friends__pk=target.id, pk=sender.pk
         ).exists():
             # если уже друзья
+            logger.warning(
+                f'попытка отправить запрос пользователю, с которым уже друзья, {sender.email} - {target.email}'
+            )
             raise ValidationError({
                 'target': 'Нельзя отправить запрос пользователю, с котором вы уже друзья',
             })
@@ -76,6 +84,9 @@ class OutcomingRequestsSerializer(BaseRequestsSerializer):
                 target=target,
         ).exists():
             # если уже есть запрос от этого пользователя
+            logger.warning(
+                f'попытка отправить повторный запрос, {sender.email} - {target.email}'
+            )
             raise ValidationError({
                 'target': 'Уже есть активный запрос от этому пользователю',
             })

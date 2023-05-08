@@ -2,9 +2,13 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework.reverse import reverse
+import logging
 
 from users.models import CustomUser
 from core.utils import send_email, EmailSubjects
+
+logger = logging.getLogger('auth_logger')
+
 
 
 class SingUpTokenGenerator(PasswordResetTokenGenerator):
@@ -39,12 +43,14 @@ def sing_up_user(sing_up_data: dict):
     }
     user = CustomUser.objects.filter(email=user_data['email'], is_active=False).first()
     if user is not None:
+        logger.info(f'аккаунт {user.email} уже зарегистрирован, но не подтвержден,обновление информации')
         # если пользователь уже регистрировался, но так и не подтвердил аккаунт, то просто обновим данные
         user.first_name = user_data['first_name']
         user.last_name = user_data['last_name']
         user.save()
         user.set_password(user_data['password'])
         return user
+    logger.info(f'аккаунт {user_data["email"]} создан, ожидание подтверждения')
     return CustomUser.objects.create_user(**user_data)
 
 
@@ -90,12 +96,14 @@ def verify_account(token: str, encoded_id: str) -> bool:
         user_id = force_str(urlsafe_base64_decode(encoded_id))
         # пытаемся получить пользователя с таким id
         user = CustomUser.objects.filter(pk=user_id).first()
-    except(TypeError, ValueError, OverflowError):
+    except(TypeError, ValueError, OverflowError) as err:
+        logger.warning(f'ошибка подтверждения аккаунта. {str(err)}')
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         # если пользователь найден и токен верный, то подтверждаем аккаунт
         user.is_active = True
         user.save()
+        logger.info(f'аккаунт {user.email} успешно подтвержден')
         return True
     return False
 
@@ -124,6 +132,7 @@ def send_reset_password_email(user: CustomUser, domain: str):
 
     # отправляем письмо
     send_email(subject=email_subject, content=email_content, send_to=user.email)
+    logger.info(f'запрошен сброс пароля для {user.email}')
 
     # вернем id и токен
     return encoded_id, token
@@ -143,11 +152,13 @@ def verify_reset_password(token: str, encoded_id: str, password: str) -> bool:
         user_id = force_str(urlsafe_base64_decode(encoded_id))
         # пытаемся получить пользователя с таким id
         user = CustomUser.objects.filter(pk=user_id).first()
-    except(TypeError, ValueError, OverflowError):
+    except(TypeError, ValueError, OverflowError) as err:
+        logger.warning(f'ошибка подтверждения сброса пароля. {str(err)}')
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         # если пользователь найден и токен верный, то устанавливаем новый пароль
         user.set_password(password)
         user.save()
+        logger.info(f'успешно сброшен пароль для {user.email}')
         return True
     return False

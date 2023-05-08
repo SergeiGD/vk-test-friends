@@ -1,7 +1,11 @@
 from django.utils import timezone
+import logging
 
 from users.models import CustomUser
 from friend_requests.models import FriendRequest
+
+logger = logging.getLogger(__name__)
+
 
 
 def get_active_incoming_requests(user: CustomUser):
@@ -73,8 +77,14 @@ def send_request(request: FriendRequest) -> bool:
     if symmetric_request is not None:
         # если нашли, то не сохраняем в БД новую заявку, а просто подтверждаем встречную
         confirm_request(symmetric_request)
+        logger.info(
+            f'{sender.email} имеет встречную заявку от {target.email}, новая не создана'
+        )
         return False
 
     # иначе сохраняем заявку
     request.save()
+    logger.info(
+        f'заявка в друзья создана. Отправитель - {sender.email}, получатель - {target.email}'
+    )
     return True
