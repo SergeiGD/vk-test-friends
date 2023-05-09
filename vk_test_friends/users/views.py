@@ -5,13 +5,10 @@ from rest_framework.generics import ListAPIView, get_object_or_404, RetrieveAPIV
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
-import logging
 
 from .serializers import UsersSerializer
 from .services import get_friends_list, get_friendship_status, remove_from_friends_list, FriendshipStatuses
 from .models import CustomUser
-
-logger = logging.getLogger(__name__)
 
 
 class UsersListAPIView(ListAPIView):

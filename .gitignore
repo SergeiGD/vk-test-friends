@@ -4,4 +4,6 @@
 venv
 postgres_data
 vk_test_friends/.coverage
-vk_test_friends/logs
+vk_test_friends/logs/app_logs.log
+vk_test_friends/logs/auth.log
+vk_test_friends/logs/emails.log
