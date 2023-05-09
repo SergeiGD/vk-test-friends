@@ -1,3 +1,4 @@
+[![Build Status](https://app.travis-ci.com/SergeiGD/vk-test-friends.svg?token=LxNeQ6pT3pbWCVDk9f8J&branch=main)](https://app.travis-ci.com/SergeiGD/vk-test-friends)
 # vk test friends
 
 ## Навигация
