@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.9"
+  - "3.6"
 
 services:
   - docker
@@ -9,4 +9,4 @@ before_script:
   - pip install docker-compose
 
 script:
-  - docker-compose run app sh -c "coverage run manage.py test"
+  - docker-compose run app coverage run manage.py test -v 2
