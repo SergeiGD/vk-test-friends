@@ -7,6 +7,7 @@ services:
 
 before_script:
   - pip install docker-compose
+  - cp .dump_env .env
 
 script:
   - docker-compose run app coverage run manage.py test -v 2
