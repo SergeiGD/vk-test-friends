@@ -8,6 +8,8 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-CMD python3 manage.py makemigrations && \
-    python3 manage.py migrate && \
-    python3 manage.py runserver 0.0.0.0:8000
+COPY entrypoint.sh /app_scripts/entrypoint.sh
+RUN sed -i 's/\r$//g' /app_scripts/entrypoint.sh
+RUN chmod +x /app_scripts/entrypoint.sh
+
+CMD /app_scripts/entrypoint.sh

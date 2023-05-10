@@ -3,6 +3,7 @@ test:
 	-docker-compose run app coverage report
 
 build:
+	if ! [ -e ".env" ]; then cp .trevis_env .env; fi;
 	docker-compose up --build
 
 run:
