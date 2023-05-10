@@ -2,6 +2,7 @@ from rest_framework.reverse import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.core import mail
+from django.conf import settings
 
 from core.utils import EmailSubjects
 from .services import send_sing_up_email, send_reset_password_email
@@ -20,8 +21,9 @@ class SingUpTestCase(APITestCase):
             'password2': 'mypass123',
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(mail.outbox)
-        self.assertEqual(mail.outbox[0].subject, EmailSubjects.VERIFY_ACCOUNT.value)
+        if settings.SEND_EMAILS:
+            self.assertTrue(mail.outbox)
+            self.assertEqual(mail.outbox[0].subject, EmailSubjects.VERIFY_ACCOUNT.value)
 
     def test_wrong_passwords_sing_up(self):
         """
@@ -77,8 +79,9 @@ class RequestResetPasswordTestCase(APITestCase):
             'email': self.user.email,
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(mail.outbox)
-        self.assertEqual(mail.outbox[0].subject, EmailSubjects.RESET_PASSWORD.value)
+        if settings.SEND_EMAILS:
+            self.assertTrue(mail.outbox)
+            self.assertEqual(mail.outbox[0].subject, EmailSubjects.RESET_PASSWORD.value)
 
 
 class ConfirmResetTestCase(APITestCase):

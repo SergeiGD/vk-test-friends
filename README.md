@@ -65,7 +65,8 @@ EMAIL_PASSWORD=asldakk234kkasd
 EMAIL_HOST=smtp.yandex.ru
 SECRET_KEY=django-insecure-mdskmfkmerw32kklas
 ```
-Либо просто скопируйте содержание [.dump_env](./.dump_env) в файл .env
+
+Либо просто скопируйте содержимое [.trevis_env](./.trevis_env) в файл .env
 
 Команды Makefile:
 1) make build - собрать и запустить проект **(требуется выполнить при первоначальном запуске)**

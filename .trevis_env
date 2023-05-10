@@ -4,3 +4,4 @@ DB_NAME=friends
 DB_PORT=5454
 SWAGGER_PORT=8080
 SEND_EMAILS=False
+SECRET_KEY=very_secret_key
