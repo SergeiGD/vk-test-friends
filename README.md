@@ -126,6 +126,6 @@ Swagger-UI будет доступен по адресу http://localhost:ЗНА
 
 ![remove](./screenshots/remove.png)
 
-9) Получаем список дружбы, после удаления
+9) Получаем статус дружбы после удаления
 
 ![status](./screenshots/status.png)
